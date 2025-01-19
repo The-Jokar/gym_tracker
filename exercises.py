@@ -38,14 +38,24 @@ class ExerciseTracker():
         self.exercises.loc[len(self.exercises)] = [exercise, muscle_groups, last_session, pb]
         self.exercises.to_csv('exercises.csv', index=False)
 
-    def lookup(self, exercise):
+    def lookup_exercise(self, exercise):
         """
         Looks up an exercise in the exercise tracker
 
         time complexity: O(n) where n is the number of exercises in the tracker
         space complexity: O(1) does not generate any new data only updates exiuisting data
         """
-        return self.exercises[self.exercises['Exercise'] == exercise]
+        return self.exercises[self.exercises['Exercise'] == exercise].reset_index(drop=True)
+    
+    def lookup_muscle_group(self, muscle_group):
+        """
+        Looks up an exercise by muscle group in the exercise tracker
+
+        time complexity: O(n) where n is the number of exercises in the tracker
+        space complexity: O(1) does not generate any new data only updates exiuisting data
+        """
+        return self.exercises[self.exercises['Muscle Groups'] == muscle_group].reset_index(drop=True)
+    
     
     def update(self, exercise, muscle_groups, last_session, pb):
         """
@@ -54,5 +64,8 @@ class ExerciseTracker():
         time complexity: O(n) where n is the number of exercises in the tracker
         space complexity: O(1) does not generate any new data only updates existing data
         """
+        current_pb = self.exercises.loc[self.exercises['Exercise'] == exercise, 'Personal Best'].values[0]
+        if pb > current_pb:
+            self.exercises.loc[self.exercises['Exercise'] == exercise] = [exercise, muscle_groups, last_session, pb]
         self.exercises.loc[self.exercises['Exercise'] == exercise] = [exercise, muscle_groups, last_session, pb]
         self.exercises.to_csv('exercises.csv', index=False)

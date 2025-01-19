@@ -18,9 +18,12 @@ class MonthlyCalender():
         self.month = dt.datetime.now().month
         self.year = dt.datetime.now().year
         self.first_day, num_days = cal.monthrange(self.year, self.month)
-        # check for an exisiting calendar if not create a new one
+        # check for an exisiting calendar if not create a new one or if first day of the month make a new one
         try:
-            self.cal = pd.read_csv('calender.csv')
+            if dt.datetime.now().day == 1:
+                raise FileNotFoundError
+            else:
+                self.cal = pd.read_csv('calender.csv')
         except:
             # create a data frame to store the calender
             self.cal = pd.DataFrame(index=range(1, 5), columns=['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'])
@@ -50,7 +53,7 @@ class MonthlyCalender():
         space complexity: O(1) does not generate any new data only updates exiuisting data
         """
         date = dt.datetime.now().day
-        week = ((date + self.first_day) // 7)
+        week = ((date + self.first_day - 1) // 7)
         day_of_week = (date + self.first_day - 1) % 7
         # if visited update the data frame and write to csv
         if visted == 'yes':
